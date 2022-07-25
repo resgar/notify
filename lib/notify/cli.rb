@@ -11,31 +11,41 @@ module Notify
 
     def start
       notifier = Notify::Monitor.new(interval: 5)
-      conn = Notify::Connection.new(options[:url])
 
-      notifier.watch do |message, time|
-        puts '---------------------------'
-        puts "New message at #{time}:\n\n"
-        puts "Body: #{message}"
-        puts "Response:"
-        response = conn.post(message)
-        if response[:error]
-          puts 'Error - ' + response[:body]
-        else
-          puts response[:body] 
+      notifier.watch do |messages, time|
+        if messages.any?
+          Thread.new do
+            puts "******** New message at #{time}: ******** \n\n"
+            conn = Notify::Connection.new(options[:url])
+            messages.each do |message|
+              puts "Message: #{message}"
+              puts "Response:"
+              response = conn.post(message)
+              if response[:error]
+                puts 'Error - ' + response[:body]
+              else
+                puts response[:body] 
+              end
+              puts '---------------------------'
+            end
+          end
         end
       end
 
+      input = nil
+
       if STDIN.tty?
-        while (message = STDIN.gets) != "\n"
-          notifier.push(message.chomp)
+        while (input = STDIN.gets.to_s.chomp) != "exit"
+          notifier.push(input)
         end
       else
         $/ = "END"
-        STDIN.gets.split("\n").each do |message|
-          notifier.push(message)
+        STDIN.gets.split("\n").each do |input|
+          notifier.push(input)
         end
       end
+
+      return if input == 'exit'
 
       notifier.start
     end

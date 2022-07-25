@@ -15,10 +15,11 @@ module Notify
 
     def watch
       every(interval) do
+        messages = []
         until queue.empty? do
-          message = queue.pop
-          yield message, Time.now
+          messages << queue.pop
         end
+        yield messages, Time.now
       end
     end
 
