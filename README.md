@@ -1,12 +1,13 @@
 # Notify
 
+Notify uses Queue to store messages. The notifier module monitors the queue and sends the messages to the url at specified intervals. The notifier is run in a separate thread. The program also creates threads for entering data and executing http requests so as not to disturb the main routine of the program.
+
 ## Requirements
 * Ruby >= 3.1.x
 
 ## Installation
 
 ```bash
-git clone https://github.com/resgar/notify.git
 cd notify
 ```
 
@@ -24,16 +25,6 @@ bundle exec bin/notify start --url http://localhost:8080/notify -i 5 < messages.
 ```bash
 bundle exec rspec
 ```
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/notify. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/notify/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
