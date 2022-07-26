@@ -1,28 +1,29 @@
 # Notify
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/notify`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+## Requirements
+* Ruby >= 3.1.x
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'notify'
+```bash
+git clone https://github.com/resgar/notify.git
+cd notify
 ```
 
 And then execute:
 
     $ bundle install
 
-Or install it yourself as:
-
-    $ gem install notify
-
 ## Usage
 
-TODO: Write usage instructions here
+```bash
+bundle exec bin/notify start --url http://localhost:8080/notify -i 5 < messages.txt
+```
+
+## Running tests
+```bash
+bundle exec rspec
+```
 
 ## Development
 
