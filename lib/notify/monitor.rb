@@ -21,10 +21,15 @@ module Notify
         end
         yield messages, Time.now
       end
+      start
     end
 
     def start
       thread.join
+    end
+
+    def finish
+      thread.exit
     end
 
     private

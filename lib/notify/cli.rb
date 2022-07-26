@@ -3,51 +3,40 @@
 require 'thor'
 require 'notify'
 require 'notify/connection'
+require 'notify/input'
 
 module Notify
   class CLI < Thor
-    desc "server --url URL", "Runs the server on a specific url"
-    method_option :url, aliases: "-u"
+    desc "start", "Runs the server on a specific url"
+    method_option :url, aliases: "-u", required: true
+    method_option :interval, aliases: "-i", default: '5'
 
     def start
-      notifier = Notify::Monitor.new(interval: 5)
+      notifier = Notify::Monitor.new(interval: options[:interval].to_i)
+
+      input_handler = Notify::Input.get do |input|
+        notifier.push(input)
+      end
 
       notifier.watch do |messages, time|
+        notifier.finish unless input_handler.status || messages.any?
+
         if messages.any?
-          Thread.new do
-            puts "******** New message at #{time}: ******** \n\n"
-            conn = Notify::Connection.new(options[:url])
-            messages.each do |message|
-              puts "Message: #{message}"
-              puts "Response:"
-              response = conn.post(message)
-              if response[:error]
-                puts 'Error - ' + response[:body]
-              else
-                puts response[:body] 
-              end
-              puts '---------------------------'
+          puts "******** New message at #{time}: ******** \n\n"
+          conn = Notify::Connection.new(options[:url])
+          messages.each do |message|
+            puts "Message: #{message}"
+            puts "Response:"
+            response = conn.post(message)
+            if response[:error]
+              puts 'Error - ' + response[:body]
+            else
+              puts response[:body] 
             end
+            puts '---------------------------'
           end
         end
       end
-
-      input = nil
-
-      if STDIN.tty?
-        while (input = STDIN.gets.to_s.chomp) != "exit"
-          notifier.push(input)
-        end
-      else
-        $/ = "END"
-        STDIN.gets.split("\n").each do |input|
-          notifier.push(input)
-        end
-      end
-
-      return if input == 'exit'
-
-      notifier.start
     end
   end
 end
