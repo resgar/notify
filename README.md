@@ -1,6 +1,6 @@
 # Notify
 
-Notify uses Queue to store messages. The notifier module monitors the queue and sends the messages to the url at specified intervals. The notifier is run in a separate thread. The program also creates threads for entering data and executing http requests so as not to disturb the main routine of the program.
+This library implements a client, which sends signals to the configured server. It uses Queue to store messages. It monitors the queue and sends the messages to the url at specified intervals.
 
 ## Requirements
 * Ruby >= 3.1.x
@@ -17,9 +17,18 @@ And then execute:
 
 ## Usage
 
-```bash
-bundle exec bin/notify start --url http://localhost:8080/notify -i 5 < messages.txt
-```
+To read the messages from the interactive console:
+* `` bundle exec bin/notify start --url http://localhost:8000/notify -i 10 ``. 
+
+By pressing Enter, the message will be queued for sending.
+
+We can also read the input from a file. Each line will be a new message:
+* `` bundle exec bin/notify start --url http://localhost:8000/notify < filename.txt ``
+
+## OPTIONS
+    -h, --help                           Print this help text and exit
+    -u, --url                            Runs the server on a specific url
+    -i                                   Notification interval
 
 ## Running tests
 ```bash
